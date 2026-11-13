@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ITASM Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>ITASM</h2>
+    <p id="who" class="muted"></p>
+    <nav>
+      <button data-view="dashboard" class="active">Dashboard</button>
+      <button data-view="employees" data-admin>Employees</button>
+      <button data-view="assets">Assets</button>
+      <button data-view="software">Software Licenses</button>
+      <button data-view="requests">Asset Requests</button>
+      <button data-view="tickets">Tickets</button>
+      <button data-view="notifications">Notifications</button>
+    </nav>
+    <button id="logout" class="ghost">Logout</button>
+  </aside>
+  <main class="content">
+    <header class="top">
+      <h1 id="view-title">Dashboard</h1>
+      <a href="/swagger-ui.html" target="_blank">API Docs</a>
+    </header>
+    <section id="view-dashboard" class="view"></section>
+    <section id="view-employees" class="view" hidden></section>
+    <section id="view-assets" class="view" hidden></section>
+    <section id="view-software" class="view" hidden></section>
+    <section id="view-requests" class="view" hidden></section>
+    <section id="view-tickets" class="view" hidden></section>
+    <section id="view-notifications" class="view" hidden></section>
+  </main>
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card">
+      <button class="close" id="modal-close">&times;</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

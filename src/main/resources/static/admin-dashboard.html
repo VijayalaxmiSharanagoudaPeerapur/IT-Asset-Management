@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ITASM - Admin Management Console</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <h2>ITASM</h2>
+      <span class="role-badge admin">Admin</span>
+    </div>
+    <p id="who" class="muted"></p>
+    <nav>
+      <button data-view="dashboard" class="active">Overview &amp; Stats</button>
+      <button data-view="analytics">Advanced Analytics</button>
+      <button data-view="reports">Management Reports</button>
+      <button data-view="procurement">Procurement</button>
+      <button data-view="employees">Employees</button>
+      <button data-view="assets">Asset Inventory</button>
+      <button data-view="software">Software Licenses</button>
+      <button data-view="requests">Asset Requests</button>
+      <button data-view="tickets">Service Tickets</button>
+      <button data-view="audit">Audit Logs</button>
+      <button data-view="security">Security Events</button>
+      <button data-view="notifications">Notifications</button>
+    </nav>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+      <a href="/employee-dashboard.html" class="ghost" style="text-decoration: none; text-align: center; padding: 8px; border-radius: 8px; font-size: 13px;">Go to Employee View &rarr;</a>
+      <button id="logout" class="ghost">Logout</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="top">
+      <h1 id="view-title">Overview &amp; Stats</h1>
+      <div style="display: flex; gap: 16px; align-items: center; width: 40%;">
+        <div style="position: relative; width: 100%;">
+            <input type="text" id="global-search-input" placeholder="Global Search (Assets, Employees, Tickets)..." style="width: 100%; border-radius: 20px; padding-left: 16px;" />
+            <div id="global-search-results" style="position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border-radius: 8px; box-shadow: var(--shadow); z-index: 100; max-height: 300px; overflow-y: auto; display: none;"></div>
+        </div>
+        <a href="/swagger-ui.html" target="_blank" style="white-space: nowrap;">API Docs</a>
+        <a href="/" style="color: var(--muted); text-decoration: none; font-size: 14px; white-space: nowrap;">Portal Home</a>
+      </div>
+    </header>
+    <section id="view-dashboard" class="view"></section>
+    <section id="view-analytics" class="view" hidden>
+        <div style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Live Measured Performance Telemetry</h2>
+                <span class="badge" style="background: rgba(40, 167, 69, 0.2); color: #28a745; border: 1px solid #28a745; font-size: 12px; padding: 4px 10px;">● Live Measured</span>
+            </div>
+            <div class="stats" style="margin-top: 14px;">
+                <div class="stat">Total Employees<strong id="metric-employees">-</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Actual Measurement</span></div>
+                <div class="stat">Total IT Assets<strong id="metric-assets">-</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Actual Measurement</span></div>
+                <div class="stat">Total API Requests<strong id="metric-requests">-</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Actual Measurement</span></div>
+                <div class="stat">Measured Avg Latency<strong id="metric-avg-latency" style="color: var(--accent);">-</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Actual Measurement</span></div>
+                <div class="stat">API Error Rate<strong id="metric-error-rate">-</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Actual Measurement</span></div>
+                <div class="stat">Server Uptime<strong id="metric-uptime">-</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Since Startup</span></div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Target Capacity &amp; SLA Benchmarks</h2>
+                <span class="badge" style="background: rgba(245, 193, 92, 0.2); color: var(--warn); border: 1px solid var(--warn); font-size: 12px; padding: 4px 10px;">Target Benchmark</span>
+            </div>
+            <div class="stats" style="margin-top: 14px;">
+                <div class="stat">Target Response Time<strong style="color: var(--warn);">&lt;200ms</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Target Capacity (SLA)</span></div>
+                <div class="stat">Target Availability<strong style="color: var(--warn);">99.9%</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Target Uptime (SLA)</span></div>
+                <div class="stat">JVM Heap Memory<strong id="metric-memory">-</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">JVM Allocation</span></div>
+                <div class="stat">Active Threads<strong id="metric-threads">-</strong><span class="muted" style="font-size: 12px; display: block; margin-top: 4px;">Worker Threads</span></div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 24px;">
+            <h2>Endpoint Performance &amp; Latency Breakdown</h2>
+            <div style="overflow-x: auto; margin-top: 12px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Endpoint Pattern</th>
+                            <th>Request Count</th>
+                            <th>Measured Avg Latency</th>
+                            <th>Max Latency</th>
+                            <th>Errors</th>
+                        </tr>
+                    </thead>
+                    <tbody id="endpoint-metrics-tbody">
+                        <tr><td colspan="6" style="text-align: center; color: var(--muted); padding: 16px;">Collecting endpoint performance metrics...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 24px;">
+            <h2>Asset Distribution</h2>
+            <div style="height: 300px;"><canvas id="assetStatusChart"></canvas></div>
+        </div>
+        <div class="card">
+            <h2>Ticket Priorities</h2>
+            <div style="height: 300px;"><canvas id="ticketPriorityChart"></canvas></div>
+        </div>
+    </section>
+    <section id="view-reports" class="view" hidden></section>
+    <section id="view-procurement" class="view" hidden></section>
+    <section id="view-employees" class="view" hidden></section>
+    <section id="view-assets" class="view" hidden></section>
+    <section id="view-software" class="view" hidden></section>
+    <section id="view-requests" class="view" hidden></section>
+    <section id="view-tickets" class="view" hidden></section>
+    <section id="view-audit" class="view" hidden></section>
+    <section id="view-security" class="view" hidden></section>
+    <section id="view-notifications" class="view" hidden></section>
+  </main>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card">
+      <button class="close" id="modal-close">&times;</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- AI Chat Widget -->
+  <div id="ai-chat-widget" class="ai-widget collapsed">
+    <div class="ai-header" id="ai-header">
+      <span>AI Assistant</span>
+      <button id="ai-toggle">&uarr;</button>
+    </div>
+    <div class="ai-body" id="ai-body">
+      <div id="ai-messages" class="ai-messages">
+        <div class="message ai">Hi! I'm your IT Asset Assistant. How can I help you?</div>
+      </div>
+      <div class="ai-input-area">
+        <input type="text" id="ai-input" placeholder="Ask me anything..." />
+        <button id="ai-send">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/ai-chat.js"></script>
+  <script src="/js/admin-dashboard.js"></script>
+  <script src="/js/admin-dashboard-extended.js"></script>
+</body>
+</html>

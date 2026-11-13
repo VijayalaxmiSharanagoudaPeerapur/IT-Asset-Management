@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ITASM - Employee Self-Service Portal</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <h2>ITASM</h2>
+      <span class="role-badge employee">Employee</span>
+    </div>
+    <p id="who" class="muted"></p>
+    <nav>
+      <button data-view="assets" class="active">My Equipment</button>
+      <button data-view="requests">Request Equipment</button>
+      <button data-view="tickets">My Support Tickets</button>
+      <button data-view="software">My Software</button>
+      <button data-view="notifications">Notifications</button>
+      <button data-view="profile">My Profile</button>
+    </nav>
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+      <a href="/admin-dashboard.html" class="ghost" style="text-decoration: none; text-align: center; padding: 8px; border-radius: 8px; font-size: 13px;">Switch to Admin View &rarr;</a>
+      <button id="logout" class="ghost">Logout</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="top">
+      <h1 id="view-title">My Equipment</h1>
+      <div>
+        <a href="/" style="color: var(--muted); text-decoration: none; font-size: 14px;">Portal Home</a>
+      </div>
+    </header>
+    <section id="view-assets" class="view"></section>
+    <section id="view-requests" class="view" hidden></section>
+    <section id="view-tickets" class="view" hidden></section>
+    <section id="view-software" class="view" hidden></section>
+    <section id="view-notifications" class="view" hidden></section>
+    <section id="view-profile" class="view" hidden></section>
+  </main>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card">
+      <button class="close" id="modal-close">&times;</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- AI Chat Widget -->
+  <div id="ai-chat-widget" class="ai-widget collapsed">
+    <div class="ai-header" id="ai-header">
+      <span>AI Assistant</span>
+      <button id="ai-toggle">&uarr;</button>
+    </div>
+    <div class="ai-body" id="ai-body">
+      <div id="ai-messages" class="ai-messages">
+        <div class="message ai">Hi! I'm your IT Asset Assistant. How can I help you?</div>
+      </div>
+      <div class="ai-input-area">
+        <input type="text" id="ai-input" placeholder="Ask me anything..." />
+        <button id="ai-send">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/ai-chat.js"></script>
+  <script src="/js/employee-dashboard.js"></script>
+</body>
+</html>

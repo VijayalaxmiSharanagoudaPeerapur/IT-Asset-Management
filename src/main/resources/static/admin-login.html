@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login - ITASM</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="auth-body">
+  <main class="login-card">
+    <a href="/" class="back-link">&larr; Back to Portal Selection</a>
+    <span class="role-badge admin">Administrator Access</span>
+    <h1>Admin Sign In</h1>
+    <p class="muted">Enter administrator credentials to manage assets, employees, tickets, and configurations.</p>
+    
+    <form id="admin-login-form">
+      <label>Admin Username
+        <input name="username" placeholder="Enter admin username" required autofocus />
+      </label>
+      <label>Admin Password
+        <input name="password" type="password" placeholder="Enter admin password" required />
+      </label>
+      <button type="submit" style="width: 100%; margin-top: 8px;">Sign In to Admin Console</button>
+      <p id="login-error" class="error" hidden style="margin-top: 12px;"></p>
+    </form>
+
+    <div class="hint">
+      <p>Need Employee access? <a href="/employee-login.html" style="color: var(--accent);">Switch to Employee Login</a></p>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    document.getElementById("admin-login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const err = document.getElementById("login-error");
+      err.hidden = true;
+      const form = new FormData(e.target);
+      try {
+        const data = await api("/api/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ username: form.get("username"), password: form.get("password") })
+        });
+        
+        // Strict Role Guard for Admin Portal
+        if (data.role !== "ADMIN") {
+          throw new Error("Access Denied: This account is an EMPLOYEE. Please use the Employee Portal.");
+        }
+
+        localStorage.setItem("itasm_token", data.token);
+        localStorage.setItem("itasm_user", JSON.stringify(data));
+        location.href = "/admin-dashboard.html";
+      } catch (ex) {
+        err.hidden = false;
+        err.textContent = ex.message;
+      }
+    });
+  </script>
+</body>
+</html>
